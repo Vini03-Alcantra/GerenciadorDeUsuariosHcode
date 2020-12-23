@@ -79,21 +79,21 @@ class User{
             return usersID; 
         }
 
+        toJSON(){
+            let json = {}
+
+            Object.keys(this).forEach(key => {
+                if(this[key] !== undefined) json[key] = this[key]
+            })
+            return json
+        }
+
         save(){
-            let users = User.getUsersStorage();
-            if (this.id > 0) {
-                users.map(u=>{
-                    if (u._id == this.id) {
-                        Object.assign(u, this)
-                    }
-                    return u;
-                })
-            } else {
-                this._id = this.getNewID()
-                users.push(this)
+            if (this.id) {
+                HttpRequest.put(`/users/${this.id}`, this.toJSON())
+            }else{
+
             }
-            localStorage.setItem("users", JSON.stringify(users))                
-            
         }
 
         remove(){
