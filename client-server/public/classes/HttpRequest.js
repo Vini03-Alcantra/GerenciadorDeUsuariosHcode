@@ -4,6 +4,18 @@ class HttpRequest{
         return HttpRequest.request('GET', url, params)
     }
 
+    static delete(url, params = {}){
+        return HttpRequest.request('DELETE', url, params)
+    }
+
+    static post(url, params = {}){
+        return HttpRequest.request('POST', url, params)
+    }
+
+    static put(url, params = {}){
+        return HttpRequest.request('PUT', url, params)
+    }
+
     static request(method, url, params = {}){
         return new Promise((resolve, reject) => {
             let ajax = new XMLHttpRequest();
