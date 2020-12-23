@@ -38,4 +38,11 @@ router.delete('/:id', function(req, res, next){
   })
 })
 
+router.post('/:id', function(req, res, next){
+  client.post(`/users`, req.body, function(err, request, response, obj){
+    assert.ifError(err)
+    res.json(obj)
+  })
+})
+
 module.exports = router;
