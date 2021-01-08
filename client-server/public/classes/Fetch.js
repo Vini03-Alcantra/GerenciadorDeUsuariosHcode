@@ -1,0 +1,45 @@
+class Fetch{
+
+    static get(url, params = {}){
+        return Fecth.request('GET', url, params)
+    }
+
+    static delete(url, params = {}){
+        return Fetch.request('DELETE', url, params)
+    }
+
+    static post(url, params = {}){
+        return Fetch.request('POST', url, params)
+    }
+
+    static put(url, params = {}){
+        return Fetch.request('PUT', url, params)
+    }
+
+    static request(method, url, params = {}){
+        return new Promise((resolve, reject) => {
+            let ajax = new XMLHttpRequest();
+
+            ajax.open(method.toUpperCase(), url);
+
+            ajax.onerror = event => {
+                reject(e);
+            }
+
+            ajax.onload = event => {    
+                let obj = {};
+                
+                try {
+                    obj = JSON.parse(ajax.responseText)
+                } catch (error) {
+                    reject(error)
+                    console.error(error)
+                }          
+                
+                resolve(obj)
+            }        
+            ajax.setRequestHeader('Content-type', 'application/json')            
+            ajax.send(JSON.stringify(params));
+        })
+    }
+}
