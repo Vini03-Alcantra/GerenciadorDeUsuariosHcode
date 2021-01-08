@@ -77,33 +77,40 @@ class User{
             usersID++;
             localStorage.setItem("usersID", usersID)
             return usersID; 
-        }
+        }        
 
         toJSON(){
             let json = {}
 
             Object.keys(this).forEach(key => {
-                if(this[key] !== undefined) json[key] = this[key]
+                if (this[key] !== undefined) {
+                    json[key] = this[key]
+                }
             })
-            return json
+
+            return json;
         }
 
         save(){
-            if (this.id) {
-                HttpRequest.put(`/users/${this.id}`, this.toJSON())
-            }else{
+            return new Promise((resolve, reject) => {
+                let promise;
 
-            }
+                if (this.id) {
+                    promise = HttpRequest.put(`/users/${this.id}`, this.toJSON())
+                } else {
+                    promise = HttpRequest.post(`/users`, this.toJSON())
+                }               
+                promise.then(data => {
+                    this.loadFromJSON(data)
+                    resolve(this)
+                }).catch(e => {
+                    reject(e)
+                })
+            })
         }
 
         remove(){
-            let users = User.getUsersStorage();
-            users.forEach((userData, index) =>{
-                if (this._id == userData._id) {
-                    users.splice(index, 1)
-                }
-            })
-            localStorage.setItem("users", JSON.stringify(users))
+            return HttpRequest.delete(`/users/${this.id}`)
         }
 
 }

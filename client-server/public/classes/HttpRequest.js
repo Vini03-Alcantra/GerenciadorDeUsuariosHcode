@@ -20,7 +20,7 @@ class HttpRequest{
         return new Promise((resolve, reject) => {
             let ajax = new XMLHttpRequest();
 
-            ajax.open(method, url);
+            ajax.open(method.toUpperCase(), url);
 
             ajax.onerror = event => {
                 reject(e);
@@ -33,13 +33,13 @@ class HttpRequest{
                     obj = JSON.parse(ajax.responseText)
                 } catch (error) {
                     reject(error)
-                    console.error(e)
+                    console.error(error)
                 }          
                 
                 resolve(obj)
             }        
-
-            ajax.send();
+            ajax.setRequestHeader('Content-type', 'application/json')            
+            ajax.send(JSON.stringify(params));
         })
     }
 }
