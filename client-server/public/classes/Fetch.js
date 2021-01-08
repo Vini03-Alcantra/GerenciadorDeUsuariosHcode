@@ -1,7 +1,7 @@
 class Fetch{
 
     static get(url, params = {}){
-        return Fecth.request('GET', url, params)
+        return Fetch.request('GET', url, params)
     }
 
     static delete(url, params = {}){
@@ -18,28 +18,32 @@ class Fetch{
 
     static request(method, url, params = {}){
         return new Promise((resolve, reject) => {
-            let ajax = new XMLHttpRequest();
+            let request;
 
-            ajax.open(method.toUpperCase(), url);
+            switch(method.toLowerCase()){
+                case 'get':
+                    request = url
+                break;
+                default:                
+                request = new Request(url, {
+                    method,
+                    body: JSON.stringify(params),
+                    headers: new Headers({
+                        'Content-Type':'application/json'
+                    })
+                })
 
-            ajax.onerror = event => {
-                reject(e);
             }
-
-            ajax.onload = event => {    
-                let obj = {};
-                
-                try {
-                    obj = JSON.parse(ajax.responseText)
-                } catch (error) {
-                    reject(error)
-                    console.error(error)
-                }          
-                
-                resolve(obj)
-            }        
-            ajax.setRequestHeader('Content-type', 'application/json')            
-            ajax.send(JSON.stringify(params));
+            
+            fetch(request).then(response => {
+                response.json().then(json=>{
+                    resolve(json)
+                })
+            }).catch(e => {
+                reject(e)
+            })
+        }).catch(e => {
+            reject(e)
         })
     }
 }
